@@ -204,6 +204,7 @@
             this.txtRGName.Size = new System.Drawing.Size(261, 22);
             this.txtRGName.TabIndex = 4;
             this.txtRGName.Text = "MigratedResources";
+            this.txtRGName.Leave += new System.EventHandler(this.txtRGName_Leave);
             // 
             // label6
             // 

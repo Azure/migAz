@@ -123,7 +123,6 @@ namespace MIGAZ.Forms
 
 
             // Initialise subscriptions
-            Subscription currentSubscription = null;
             List<Subscription> subscriptions = new List<Subscription>();
             foreach (var subscription in Subresults.value)
             {
@@ -164,10 +163,18 @@ namespace MIGAZ.Forms
             }
         }
 
-
         private void tabPage2_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void txtRGName_Leave(object sender, EventArgs e)
+        {
+            // Make sure there are no spaces in the resource group name.
+            if (!string.IsNullOrWhiteSpace(txtRGName.Text))
+            {
+                txtRGName.Text = txtRGName.Text.Trim().Replace(" ", "-");
+            }
         }
     }
 }

@@ -20,7 +20,7 @@
     </head>
     <body>
         <h1>Deploying your MigAz-generated template to Azure Resource Manager</h1>
-        <p>Congratulations! You just used <a href="http://aka.ms/migaz">MigAz</a> to export some Classic Azure resources
+        <p>Congratulations! You just used <a href="http://aka.ms/migaz">MigAz</a> to export Azure resources
         to an Azure Resource Manager (ARM) template. To use your new resources you'll need to deploy this template to Azure.
         Here's what you need to do.</p>
 
@@ -45,10 +45,10 @@
             <li>
                 <p>If your template contains VMs, run the script to snapshot and copy the VHDs from your source to your target 
                     storage accounts</p>
-<pre>{migAzPath}BlobCopy.ps1 -ResourcegroupName "{resourceGroupName}" `
+<pre>& '{migAzPath}BlobCopy.ps1' -ResourcegroupName "{resourceGroupName}" `
     -DetailsFilePath "{blobDetailsPath}" -StartType StartBlobCopy
     
-{migAzPath}BlobCopy.ps1 -ResourcegroupName "{resourceGroupName}" `
+& '{migAzPath}BlobCopy.ps1' -ResourcegroupName "{resourceGroupName}" `
     -DetailsFilePath "{blobDetailsPath}" -StartType MonitorBlobCopy
 </pre>
             </li>
@@ -57,7 +57,7 @@
 <pre>New-AzureRmResourceGroupDeployment -TemplateFile "{templatePath}" -ResourceGroupName "{resourceGroupName}"</pre>
             </li>
         </ol>
-        <p>Once you are happy that all is well with your ARM deployment, you can delete your old classic deployment.
+        <p>Once you are happy that all is well with your ARM deployment, you can delete your old deployment.
             Thank you for using MigAz!</p>
     </body>
 </html>

@@ -607,8 +607,6 @@ namespace MIGAZ.Generator
 
             foreach (var cloudServiceVM in artefacts.VirtualMachines)
             {
-                string deploymentName;
-                string virtualNetworkName;
                 string loadBalancerName = "";
             //    _asmRetriever.GetVMDetails(subscriptionId, cloudServiceVM.CloudService, cloudServiceVM.VirtualMachine, token, out deploymentName, out virtualNetworkName, out loadBalancerName);
 

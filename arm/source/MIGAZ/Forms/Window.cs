@@ -20,7 +20,6 @@ namespace MIGAZ
         private string subscriptionid;
         private Dictionary<string, string> subscriptionsAndTenants;
         private AsmRetriever _asmRetriever;
-        private AsmArtefacts _asmArtefacts;
         private TemplateGenerator _templateGenerator;
         private ISaveSelectionProvider _saveSelectionProvider;
         private ILogProvider _logProvider;

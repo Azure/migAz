@@ -193,6 +193,10 @@ namespace MigAz.Azure.Arm
             string url = "/subscriptions/" + this.AzureSubscription.SubscriptionId + "/resourceGroups/" + this.ResourceGroup.Name + ArmConst.ProviderManagedDisks + this.Name + "/BeginGetAccess?api-version=2017-03-30";
             string strAccessSAS = String.Empty;
 
+            // https://docs.microsoft.com/en-us/rest/api/compute/manageddisks/disks/get
+            string urlInfo = "/subscriptions/" + this.AzureSubscription.SubscriptionId + "/resourceGroups/" + this.ResourceGroup.Name + ArmConst.ProviderManagedDisks + this.Name + "?api-version=2017-03-30";
+            string diskLocation = String.Empty;
+
             AuthenticationResult authenticationResult = await azureContext.TokenProvider.GetToken(azureContext.AzureEnvironment.ResourceManagerEndpoint, azureContext.AzureSubscription.AzureAdTenantId);
 
             using (var client = new HttpClient())
@@ -200,6 +204,14 @@ namespace MigAz.Azure.Arm
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authenticationResult.AccessToken);
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 client.BaseAddress = new Uri(azureContext.AzureEnvironment.ResourceManagerEndpoint);
+
+                if (azureContext != null && azureContext.LogProvider != null)
+                    azureContext.LogProvider.WriteLog("GetLocation", "Disk '" + this.Name + "' GetAsync " + urlInfo + "");
+
+                var infoResponse = await client.GetAsync(urlInfo);
+                string infoResponseString = await infoResponse.Content.ReadAsStringAsync();
+                JObject infoResponseJson = JObject.Parse(infoResponseString);
+                diskLocation = infoResponseJson["location"].ToString();
 
                 if (azureContext != null && azureContext.LogProvider != null)
                     azureContext.LogProvider.WriteLog("GetSASUrlAsync", "Disk '" + this.Name + "' PostAsync " + url + "");
@@ -220,8 +232,8 @@ namespace MigAz.Azure.Arm
                 String diskOperationStatus = "InProgress";
 
                 while (diskOperationStatus == "InProgress")
-                { 
-                    string url2 = "/subscriptions/" + azureContext.AzureSubscription.SubscriptionId + "/providers/Microsoft.Compute/locations/" + this.ResourceGroup.Location + "/DiskOperations/" + requestId.ToList<string>()[0].ToString() + "?api-version=2017-03-30";
+                {
+                    string url2 = "/subscriptions/" + azureContext.AzureSubscription.SubscriptionId + "/providers/Microsoft.Compute/locations/" + diskLocation + "/DiskOperations/" + requestId.ToList<string>()[0].ToString() + "?api-version=2017-03-30";
 
                     if (azureContext != null && azureContext.LogProvider != null)
                         azureContext.LogProvider.WriteLog("GetSASUrlAsync", "Disk '" + this.Name + "' GetAsync " + url2 + "");
@@ -249,7 +261,7 @@ namespace MigAz.Azure.Arm
                             strAccessSAS = responseJson["properties"]["output"]["accessSAS"].ToString();
 
                             if (azureContext != null && azureContext.LogProvider != null)
-                                azureContext.LogProvider.WriteLog("GetSASUrlAsync", "Disk '" + this.Name +  "' Obtained AccessSAS " + strAccessSAS + "");
+                                azureContext.LogProvider.WriteLog("GetSASUrlAsync", "Disk '" + this.Name + "' Obtained AccessSAS " + strAccessSAS + "");
                         }
                     }
                 }
